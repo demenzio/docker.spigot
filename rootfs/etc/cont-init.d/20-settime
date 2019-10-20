@@ -1,0 +1,18 @@
+#!/usr/bin/with-contenv bash
+
+if [ -n "${TZ}" ];
+then
+    echo 
+    echo "Setting Timezone ($TZ) > /etc/timezone"
+    echo $TZ > /etc/timezone
+    echo "Linking Zoneinfo ($TZ) > /etc/localtime"
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
+    echo 
+    dpkg-reconfigure -f noninteractive tzdata
+    echo 
+    echo "Done."
+else
+    echo "ATTENTION - No Timezone set."
+    echo 
+    echo "Done."
+fi

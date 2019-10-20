@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+# s6-setuidgid app
+exec /usr/bin/java -Xms1G -Xmx1G -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8 -Dcom.mojang.eula.agree=${EULA} -jar ${APPDIR}/spigot.jar \
+    -W ${WDIR} \
+    -b ${CONFDIR}/bukkit.yml \
+    --commands-settings ${CONFDIR}/commands.yml \
+    -c ${CONFDIR}/server.properties \
+    -P ${CONFDIR}/plugins \
+    -S ${CONFDIR}/spigot.yml
