@@ -7,39 +7,28 @@ if [ ! -d ${CONFDIR} ]; then
 else
 
     printf "   %s\n" "-> Directories"
-    printf "       %s" "worlds..."
+    
+    printf "       %s" "worlds... " #i WORLDS
     if [ ! -d ${CONFDIR}/worlds ]; then mkdir -p ${CONFDIR}/worlds && printf " %s\n" "CREATED"; 
         else printf " %s\n" "FOUND"
             for d in "${CONFDIR}/worlds/"*; do
                 #basename $d
-                printf "         %\n" "$d"
+                printf "         %s\n" "$d"
             done
         fi
-    printf "       %s" "plugins..."
-    if [ ! -d ${CONFDIR}/plugins ]; then mkdir -p ${CONFDIR}/plugins&& printf " %s\n" "CREATED"; 
-        else printf " %s\n" "FOUND"; fi
+    
+    printf "       %s" "plugins..." #i PLUGINS
+    if [ ! -d ${CONFDIR}/plugins ]; then mkdir -p ${CONFDIR}/plugins && printf " %s\n" "CREATED"; else printf " %s\n" "FOUND"; fi
 
-    files=( banned-ips.json banned-players.json ops.json permissions.yml usercache.json whitelist.json )
-    printf "   %s\n" "-> Files"
-    for i in "${files[@]}"
-        do
-        printf "       %s" "$i..."
-        if [ ! -f ${CONFDIR}/$i ]; then 
-            printf " %s" "MISSING"
-            if [ -f ${APPDIR}/$i ]; then #? CHECK IF IT IS A LINK, BUT SHOULD NOT EXIST, CAUSE WILL BE CREATED AFTER EACH START
-                mv ${APPDIR}/$i ${CONFDIR}/$i
-                rm -rf ${APPDIR}/$i
-                ln -s ${CONFDIR}/$i ${APPDIR}/$i
-                printf " %s\n" " -> GENERATED"
-            else
-                printf " %s\n" "-> WARNING: $i not Found. Maybe frist run ?"
-            fi
-        else
-            printf " %s" "FOUND"
-            ln -sf ${CONFDIR}/$i ${APPDIR}/$i
-            printf " %s\n" "-> LINK GENERATED"
-        fi
-    done
+    printf "      %s" " server... " #i SERVER
+    if [ ! -d ${CONFDIR}/server ]; then 
+        mkdir -p ${CONFDIR}/server && printf " %s" "CREATED"
+        cp ${APPDIR}/spigot.jar ${CONFDIR}/server/spigot.jar && printf ", %s\n" "LOADED DEFAULT SERVER JAR" #! SHOW DEFAULT VERSION
+    else
+        jarn=$(find ${CONFDIR}/server -name '*.jar' | sed 's/\/config\/server\///') #! ADD VAR CONFDIR
+        printf " %s" "FOUND" && printf " %s\n" "WITH $jarn" 
+    fi
+
 fi
 echo
 echo "Setting owner, current settings are:"
