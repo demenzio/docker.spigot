@@ -16,6 +16,7 @@ RUN echo "**** upgrade system ****" && \
             wget \
             git \
             coreutils \
+            build-essential \
             default-jre-headless
 
 RUN echo "**** BuildTools ****" && \
@@ -25,16 +26,25 @@ RUN echo "**** BuildTools ****" && \
         java -jar ${B_BUILD_DIR}/BuildTools.jar --output-dir ${B_BUILD_OUT} --rev ${B_VERSION} && \
         mv ${B_BUILD_OUT}/spigot-*.jar ${B_BUILD_OUT}/spigot.jar
 
+RUN echo "**** MCRCON ****" && \
+       cd ${B_BUILD_DIR} && \
+       git clone https://github.com/Tiiffi/mcrcon.git && \
+       cd mcrcon && \
+       make && \
+       cp ${B_BUILD_DIR}/mcrcon/mcrcon ${B_BUILD_OUT}
+
 #i ---- Release State
 FROM xuvin/s6overlay:debian-latest AS release
 
 ENV APPDIR=/app CONFDIR=/config TZ="Europe/Berlin"
+ENV PATH="${APPDIR}/bin:${PATH}"
 ENV TERM=xterm
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV EULA=false IP=127.0.0.1 PORT=25565 WDIR=/config/worlds
 ENV JARNAME=spigot XMS=1G XMX=1G UPGJAR=0
 
 COPY --from=builder /tmp/out/spigot.jar ${APPDIR}
+COPY --from=builder /tmp/out/mcrcon ${APPDIR}/bin/
 
 RUN echo "**** upgrade system ****" && \
         apt-get update && apt-get -y upgrade  && \
@@ -42,10 +52,13 @@ RUN echo "**** upgrade system ****" && \
         mkdir -p /usr/share/man/man1 && \
         apt-get -y install \
             tzdata \
+            nano \
             default-jre-headless
 
 ADD rootfs /
 
 WORKDIR /config
+
+EXPOSE 25565
 
 ENTRYPOINT [ "/init" ]
