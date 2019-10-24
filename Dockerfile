@@ -32,6 +32,7 @@ ENV APPDIR=/app CONFDIR=/config TZ="Europe/Berlin"
 ENV TERM=xterm
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV EULA=false IP=127.0.0.1 PORT=25565 WDIR=/config/worlds
+ENV JARNAME=spigot XMS=1G XMX=1G UPGJAR=0
 
 COPY --from=builder /tmp/out/spigot.jar ${APPDIR}
 
@@ -40,6 +41,7 @@ RUN echo "**** upgrade system ****" && \
     echo "**** install packages ****" && \
         mkdir -p /usr/share/man/man1 && \
         apt-get -y install \
+            tzdata \
             default-jre-headless
 
 ADD rootfs /
