@@ -4,5 +4,4 @@ cd ${CONFDIR}/server
 wd=$(pwd)
 printf "   %s\n" "-> Running Server from: $wd ..."
 exec /usr/bin/java "-Xms${XMS}" "-Xmx${XMX}" -XX:+UseConcMarkSweepGC -Dfile.encoding=UTF-8 -Dcom.mojang.eula.agree=${EULA} -jar ${JARNAME}.jar \
-    -W ${WDIR} \
-    -P ${CONFDIR}/plugins
+    -W ${WDIR} 

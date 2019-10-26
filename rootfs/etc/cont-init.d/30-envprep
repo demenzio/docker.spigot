@@ -17,9 +17,6 @@ else
             done
         fi
     
-    printf "       %s" "plugins..." #i PLUGINS
-    if [ ! -d ${CONFDIR}/plugins ]; then mkdir -p ${CONFDIR}/plugins && printf " %s\n" "CREATED"; else printf " %s\n" "FOUND"; fi
-
     printf "      %s" " server... " #i SERVER
     if [ ! -d ${CONFDIR}/server ]; then 
         mkdir -p ${CONFDIR}/server && printf " %s" "CREATED"
@@ -28,6 +25,10 @@ else
         jarn=$(find ${CONFDIR}/server -name '*.jar' | sed 's/\/config\/server\///') #! ADD VAR CONFDIR
         printf " %s" "FOUND" && printf " %s\n" "WITH $jarn" 
     fi
+
+    printf "       %s" "plugins..." #i PLUGINS
+    if [ ! -d ${CONFDIR}/plugins/current ]; then mkdir -p ${CONFDIR}/plugins/current && printf " %s" "CREATED"; else printf " %s" "FOUND"; fi
+    if [ ! -L ${CONFDIR}/server/plugins ]; then ln -s ${CONFDIR}/plugins/current ${CONFDIR}/server/plugins && printf ", %s\n" "LINKED"; else printf ", %s\n" "LINK EXISTS"; fi
 
 fi
 echo
